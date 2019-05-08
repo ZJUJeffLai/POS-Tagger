@@ -1,11 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue May  7 15:16:13 2019
-Python3.7
-@author: JeffLai @ UC Davis
-"""
-# This code is based on train_hmm.py
-
 #!/usr/bin/python
 
 # David Bamman
@@ -39,10 +31,8 @@ INIT_STATE="init"
 FINAL_STATE="final"
 
 emissions={}
-#transitions={}
-#transitionsTotal=defaultdict(int)
-trigram = defaultdict(int)
-trigramTotal = defaultdict(int)
+trigram=defaultdict(int)
+trigramTotal=defaultdict(int)
 emissionsTotal=defaultdict(int)
 
 with open(TAG_FILE) as tagFile, open(TOKEN_FILE) as tokenFile:
@@ -52,8 +42,8 @@ with open(TAG_FILE) as tagFile, open(TOKEN_FILE) as tokenFile:
 		tokens=re.split("\s+", tokenString.rstrip())
 		pairs=zip(tags, tokens)
 
-		prev_prev_tag=INIT_STATE
-                prevtag = INIT_STATE
+		prevtag=INIT_STATE
+		lastsecondtag = INIT_STATE
 
 		for (tag, token) in pairs:
 
@@ -69,39 +59,34 @@ with open(TAG_FILE) as tagFile, open(TOKEN_FILE) as tokenFile:
 
 			if tag not in emissions:
 				emissions[tag]=defaultdict(int)
-			#if prevtag not in transitions:
-				#transitions[prevtag]=defaultdict(int)
+
 
 			# increment the emission/transition observation
 			emissions[tag][token]+=1
 			emissionsTotal[tag]+=1
 			
-			#transitions[prevtag][tag]+=1
-                        trigram[prev_prev_tag,prevtag,tag]+=1
-			#transitionsTotal[prevtag]+=1
-                        trigramTotal[prev_prev_tag,prevtag]+=1
+			trigram[lastsecondtag,prevtag,tag]+=1
+			trigramTotal[lastsecondtag,prevtag]+=1
 
-			#prevtag=tag
-                        prev_prev_tag = prevtag
-                        prevtag = tag
+			lastsecondtag = prevtag
+			prevtag=tag
 
 		# don't forget the stop probability for each sentence
-		#if prevtag not in transitions:
-		#	transitions[prevtag]=defaultdict(int)
 
-		#transitions[prevtag][FINAL_STATE]+=1
-                trigram[prev_prev_tag,prevtag,FINAL_STATE]+=1
-		#transitionsTotal[prevtag]+=1
-                trigramTotal[prev_prev_tag,prevtag]+=1
 
-Tag = emissionsTotal.keys() + [INIT_STATE] + [FINAL_STATE]
+		trigram[lastsecondtag,prevtag,FINAL_STATE]+=1
+		trigramTotal[,lastsecondtagprevtag]+=
 
-for prev_prev_tag in Tag:
-    for prev_tag in Tag:
-        for tag in Tag:
-	    print "trigram %s %s %s %s" % (prev_prev_tag, prevtag, tag, float(trigram[prev_prev_tag,prevtag,tag]+1) / (trigramTotal[prev_prev_tag,prevtag] + len(Tag)))
+Tag = emissions.keys()+[INIT_STATE]+[FINAL_STATE]
+
+for lastsecondtag in Tag:
+	for prevtag in Tag:
+		for tag in transitions[prevtag]:
+			print "trans %s %s %s %s" % (lastsecondtag, prevtag, tag, float(trigram[lastsecondtag,prevtag,tag] + 1) / (trigramTotal[lastsecondtag,prevtag] + len(Tag)))
 
 for tag in emissions:
-    for token in emissions[tag]:
-	print "emit %s %s %s " % (tag, token, float(emissions[tag][token]) / emissionsTotal[tag])
+	for token in emissions[tag]:
+		print "emit %s %s %s " % (tag, token, float(emissions[tag][token]) / emissionsTotal[tag])
+
+
 
