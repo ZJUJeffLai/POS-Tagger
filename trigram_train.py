@@ -75,13 +75,13 @@ with open(TAG_FILE) as tagFile, open(TOKEN_FILE) as tokenFile:
 
 
 		trigram[lastsecondtag,prevtag,FINAL_STATE]+=1
-		trigramTotal[,lastsecondtagprevtag]+=
+		trigramTotal[lastsecondtag,prevtag]+=1
 
 Tag = emissions.keys()+[INIT_STATE]+[FINAL_STATE]
 
 for lastsecondtag in Tag:
 	for prevtag in Tag:
-		for tag in transitions[prevtag]:
+		for tag in Tag:
 			print "trans %s %s %s %s" % (lastsecondtag, prevtag, tag, float(trigram[lastsecondtag,prevtag,tag] + 1) / (trigramTotal[lastsecondtag,prevtag] + len(Tag)))
 
 for tag in emissions:
