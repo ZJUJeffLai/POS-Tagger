@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Tue Apr 30 01:42:09 2019
-Python3.7
+Python2.7
 @author: JeffLai @ UC Davis
 """
 import math
@@ -56,7 +56,7 @@ for s in TEXT_FILE:
     Backtrace = {}
     Backtrace[0,INIT_STATE,INIT_STATE] = ''
     V[(0,INIT_STATE,INIT_STATE)] = 0.0
-    for i in range(n+1):
+    for i in range(1,n+1):
         # if a word isn't in the vocabulary, rename it with the OOV symbol
         if w[i] not in vocab:
             w[i] = OOV_SYMBOL
@@ -89,7 +89,7 @@ for s in TEXT_FILE:
         t.append(Q1_max)
         for i,j in enumerate(range(n-2,0,-1)):
             t.append(Backtrace[(j+2,t[i+1],t[i])])
-            t.reverse()
+        t.reverse()
     if foundgoal:
         print ' '.join(t)
     else:

@@ -53,7 +53,7 @@ with open(TAG_FILE) as tagFile, open(TOKEN_FILE) as tokenFile:
 		pairs=zip(tags, tokens)
 
 		prev_prev_tag=INIT_STATE
-        prevtag = INIT_STATE
+                prevtag = INIT_STATE
 
 		for (tag, token) in pairs:
 
@@ -77,31 +77,31 @@ with open(TAG_FILE) as tagFile, open(TOKEN_FILE) as tokenFile:
 			emissionsTotal[tag]+=1
 			
 			#transitions[prevtag][tag]+=1
-            trigram[prev_prev_tag,prevtag,tag]+=1
+                        trigram[prev_prev_tag,prevtag,tag]+=1
 			#transitionsTotal[prevtag]+=1
-            trigramTotal[prev_prev_tag,prev_tag]+=1
+                        trigramTotal[prev_prev_tag,prevtag]+=1
 
 			#prevtag=tag
-            prev_prev_tag = prevtag
-            prevtag = tag
+                        prev_prev_tag = prevtag
+                        prevtag = tag
 
 		# don't forget the stop probability for each sentence
 		#if prevtag not in transitions:
 		#	transitions[prevtag]=defaultdict(int)
 
 		#transitions[prevtag][FINAL_STATE]+=1
-        trigram[prev_prev_tag,prevtag,FINAL_STATE]+=1
+                trigram[prev_prev_tag,prevtag,FINAL_STATE]+=1
 		#transitionsTotal[prevtag]+=1
-        trigramTotal[prev_prev_tag,prev_tag]+=1
+                trigramTotal[prev_prev_tag,prevtag]+=1
 
 Tag = emissionsTotal.keys() + [INIT_STATE] + [FINAL_STATE]
 
 for prev_prev_tag in Tag:
-	for prev_tag in Tag:
+    for prev_tag in Tag:
         for tag in Tag:
-		print "trigram %s %s %s %s" % (prev_prev_tag, prevtag, tag, float(trigram[prev_prev_tag,prevtag,tag]) / (trigramTotal[prev_prev_tag,prevtag] + len(Tag))
+	    print "trigram %s %s %s %s" % (prev_prev_tag, prevtag, tag, float(trigram[prev_prev_tag,prevtag,tag]+1) / (trigramTotal[prev_prev_tag,prevtag] + len(Tag)))
 
 for tag in emissions:
-	for token in emissions[tag]:
-		print "emit %s %s %s " % (tag, token, float(emissions[tag][token]) / emissionsTotal[tag])
+    for token in emissions[tag]:
+	print "emit %s %s %s " % (tag, token, float(emissions[tag][token]) / emissionsTotal[tag])
 

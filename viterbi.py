@@ -38,6 +38,12 @@ for ff in f:
         #ates{$q} = 1;
         tag[q2] = 1
         tag[q3] = 1
+    elif q1 == 'emit':
+        if q2 not in emissions:
+            emissions[q2] = defaultdict(float)
+        emissions[q2][q3] = math.log(float(q4))
+        tag[q2] = 1
+        vocab[q3] = 1
 #close(HMM);
 f.close()
 
@@ -57,7 +63,7 @@ for s in TEXT_FILE:
     V['0'] = defaultdict(float)
     V['0'][INIT_STATE] = 0.0
     
-    for i in range(n+1):
+    for i in range(1,n+1):
         # if a word isn't in the vocabulary, rename it with the OOV symbol
         if w[i] not in vocab:
             w[i] = OOV_SYMBOL
@@ -78,7 +84,7 @@ for s in TEXT_FILE:
                     #$v = $V{$i - 1}{$qq} + $A{$qq}{$q} + $B{$q}{$w[$i]}
                     viterbi = V[str(i-1)][tt] + transitions[tt][t] + emissions[t][w[i]]
                     #if(!(defined $V{$i}{$q}) or $v > $V{$i}{$q}) 
-                    if(q not in V[str(i)]) or viterbi > V[str(i)][t]:
+                    if(t not in V[str(i)]) or viterbi > V[str(i)][t]:
                         # if we found a better previous state, take note!
 						#$V{$i}{$q} = $v;  # Viterbi probability
 						#$Backtrace{$i}{$q} = $qq; # best previous state
