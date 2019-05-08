@@ -20,8 +20,6 @@ FINAL_STATE = "final"
 OOV_SYMBOL = "OOV"
 
 emissions= defaultdict(float)
-unigram = defaultdict(float)
-bigram = defaultdict(float)
 trigram = defaultdict(float)
 tag = defaultdict(int)
 vocab = defaultdict(int)
@@ -63,7 +61,7 @@ for s in TEXT_FILE:
         for t in tag:
             for tt in tag:
                 for ttt in tag:
-                    if (i-1,ttt,tt) in V and (ttt,t,tt) in trigram and\
+                    if (i-1,ttt,t) in V and (ttt,t,tt) in trigram and\
                     (tt,w[i]) in emissions:
                         viterbi = V[i-1,ttt,t]+trigram[ttt,t,tt]+emissions[tt,w[i]]
                         #if(!(defined $V{$i}{$q}) or $v > $V{$i}{$q}) 
